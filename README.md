@@ -64,7 +64,7 @@ Make sure a user can't favorite himself.
 
 > Please update the following line in this `README.md` file to include your estimate of the time required for completion.
 
-Estimated Time Required: [Your Estimate Here]
+Estimated Time Required: 2 hours
 
 > After updating the estimate and right before you start coding, commit your changes using the following command:
 `git add README.md && git commit -m "Task 1 estimated" && git push`
@@ -199,5 +199,3 @@ Estimated Time Required: [Your Estimate Here]
 Congratulations! You completed the first part of this interview coding challenge. We'll now leave the API behind and enter the front-end realm.
 
 Please go to the front-end codebase and follow the instructions you'll find on the `README`. Thank you and good luck!
-
-
