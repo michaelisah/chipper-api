@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Favorite;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FavoriteFactory extends Factory
@@ -21,9 +23,29 @@ class FavoriteFactory extends Factory
      */
     public function definition(): array
     {
+        $post = Post::factory()->create();
+
         return [
-            'post_id' => \App\Models\Post::factory(),
-            'user_id' => \App\Models\User::factory(),
+            'post_id'          => $post->id,
+            'user_id'          => User::factory(),
+            'favoritable_type' => Post::class,
+            'favoritable_id'   => $post->id,
         ];
+    }
+
+    /**
+     * Configure the model factory to create a favorite for a user.
+     */
+    public function forUser(): self
+    {
+        return $this->state(function () {
+            $user = User::factory()->create();
+
+            return [
+                'post_id'          => null,
+                'favoritable_type' => User::class,
+                'favoritable_id'   => $user->id,
+            ];
+        });
     }
 }
