@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Favorite;
+use App\Models\Post;
 use Illuminate\Database\Seeder;
 
 class FavoriteSeeder extends Seeder
@@ -14,6 +15,14 @@ class FavoriteSeeder extends Seeder
     {
         Favorite::factory()
             ->count(5)
+            ->state(function () {
+                return [
+                    'favoritable_type' => Post::class,
+                    'favoritable_id'   => function (array $attributes) {
+                        return $attributes['post_id'];
+                    }
+                ];
+            })
             ->create();
     }
 }
