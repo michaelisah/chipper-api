@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\DestroyPostRequest;
+use App\Notifications\NewPostByFavoritedUser;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * @group Posts
@@ -31,6 +34,9 @@ class PostController extends Controller
             'body' => $request->input('body'),
             'user_id' => $user->id,
         ]);
+        
+        // Find all users who have favorited this user
+        $this->notifyFollowers($user, $post);
 
         return new PostResource($post);
     }
@@ -55,5 +61,22 @@ class PostController extends Controller
         $post->delete();
 
         return response()->noContent();
+    }
+    
+    /**
+     * Notify followers about a new post
+     */
+    protected function notifyFollowers(User $author, Post $post)
+    {
+        // Find all users who have favorited this author
+        $followers = User::whereHas('favorites', function ($query) use ($author) {
+            $query->where('favoritable_type', User::class)
+                  ->where('favoritable_id', $author->id);
+        })->get();
+        
+        // Send notifications asynchronously
+        if ($followers->count() > 0) {
+            Notification::send($followers, new NewPostByFavoritedUser($post, $author));
+        }
     }
 }
